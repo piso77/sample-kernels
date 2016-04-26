@@ -1,0 +1,39 @@
+name: ubuntucore-v41-20x-imx
+version: 4.1.0
+summary: The Freescale 4.1-2.0.x-imx kernel for Ubuntu Core
+description: The Freescale 4.1-2.0.x-imx kernel for Ubuntu Core
+type: kernel
+
+parts:
+  kernel:
+    plugin: kernel
+    source: .
+    source-type: git
+    kdefconfig: [imx_v7_defconfig]
+    kconfigs:
+      - CONFIG_LOCALVERSION="-4.1-2.0.x-imx"
+      - CONFIG_ARM_KERNMEM_PERMS=y
+      - CONFIG_DEBUG_RODATA=y
+      - CONFIG_DEBUG_SET_MODULE_RONX=y
+      - CONFIG_CC_STACKPROTECTOR=y
+      - CONFIG_CC_STACKPROTECTOR_STRONG=y
+      - CONFIG_BLK_DEV_LOOP_MIN_COUNT=256
+      - CONFIG_BLK_DEV_BSG=y
+      - CONFIG_DEVPTS_MULTIPLE_INSTANCES=y
+      - CONFIG_FHANDLE=y
+      - CONFIG_ENCRYPTED_KEYS=y
+      - CONFIG_NAMESPACES=y
+      - CONFIG_NET_NS=y
+      - CONFIG_SECURITY=y
+      - CONFIG_SECURITY_APPARMOR=y
+      - CONFIG_DEFAULT_SECURITY_APPARMOR=y
+      - CONFIG_SYN_COOKIES=y
+      - CONFIG_STRICT_DEVMEM=y
+      - CONFIG_SECCOMP=y
+      - CONFIG_SECCOMP_FILTER=y
+      - CONFIG_SQUASHFS=y
+      - CONFIG_SQUASHFS_XATTR=y
+      - CONFIG_SQUASHFS_XZ=y
+      - CONFIG_TMPFS_POSIX_ACL=y
+      - CONFIG_TMPFS_XATTR=y
+    kernel-image-target: zImage
