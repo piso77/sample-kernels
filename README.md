@@ -75,33 +75,33 @@ amd64 image.
 People enabling new hardware can base their derivative work out of these
 branches following these steps:
 
-Clone the ‘ubuntu-core’ official git tree:
+* Clone the ‘ubuntu-core’ official git tree:
 ```
 git clone https://github.com/snapcore/sample-kernels.git
 ```
-Pick the kernel version that suit your needs:
+* Pick the kernel version that suit your needs:
 ```
 cd sample-kernels && git checkout stable-3.14.y
 ```
-If the target hardware requires any custom patch, apply it now on top of this
+* If the target hardware requires any custom patch, apply it now on top of this
 tree (in case of a big BSP stack, it makes more sense to rebase the BSP on top
 of this branch).
-If the target hardware requires any custom kernel configuration, either create a
+* If the target hardware requires any custom kernel configuration, either create a
 new kconfig fragment in ‘kernel/configs/snappy’ and adjust the ‘kdefconfig’
-section in snapcraft.yaml  or apply the missing CONFIG directly in the
-‘kconfigs’ section in snapcraft.yaml
-If the target hardware uses a different base defconfig then ‘x86_64_defconfig’,
+section in snapcraft.yaml or apply the missing CONFIG directly in the
+‘kconfigs’ section in snapcraft.yaml.
+* If the target hardware uses a different base defconfig then ‘x86_64_defconfig’,
 change the first entry in the ‘kdefconfig’ section in snapcraft.yaml
 appropriately (e.g. multi_v7_defconfig):
 ```
 kdefconfig: [multi_v7_defconfig, …]
 ```
-Modify the name of the kernel snap in snapcraft.yaml to reflect the target
+* Modify the name of the kernel snap in snapcraft.yaml to reflect the target
 hardware and build the kernel snap:
 ```
 snapcraft -d
 ```
-Or in case of cross-compilation (e.g. armhf):
+* Or in case of cross-compilation (e.g. armhf):
 ```
 snapcraft -d --target-arch=armhf
 ```
