@@ -108,7 +108,7 @@ snapcraft -d --target-arch=armhf
 
 ## Frequently Asked Questions
 
-1. AppArmor patches conflict
+**1. AppArmor patches conflict**
 
 **Q**: While cherry-picking the entire patchset i have got a conflict when applying the first patch:
 
