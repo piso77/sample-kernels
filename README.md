@@ -141,6 +141,40 @@ probably different - just remove it, commit the changes and skip this patch.
 
 **2. Snapcraft login**
 
+**Q**: When executing ```snapcraft``` i get an error and a Python stacktrace,
+what is that?
+
+```
+$ snapcraft -d
+Preparing to pull kernel 
+Pulling kernel 
+Cloning into '/home/user/linux/parts/kernel/src'...
+warning: --depth is ignored in local clones; use file:// instead.
+done.
+Checking out files: 100% (45966/45966), done.
+Getting details for ubuntu-core
+No valid credentials found. Have you run "snapcraft login"?
+...
+```
+
+**A**: It's probably the first time you use snapcraft, and what you see is the
+result of trying to download a snap from the store without being
+authenticated. To resolve this issue:
+
+```
+$ snapcraft login
+Enter your Ubuntu One SSO credentials.
+Email: user@email.com
+Password: 
+One-time password (just press enter if you don't use two-factor authentication):
+123456
+Authenticating against Ubuntu One SSO.
+Login successful.
+```
+
+Your credentials will be cached, and you won't be asked to authenticate again in
+the future (until you ```snapcraft logout```).
+
 **3. Compiler version**
 
 **4. It doesn't compile...**
