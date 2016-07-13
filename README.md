@@ -139,8 +139,8 @@ And skip this patch.
 If you got a conflict, the content of your security/apparmor directory is
 probably different - just remove it, commit the changes and skip this patch.
 
-2. Snapcraft login
+**2. Snapcraft login**
 
-3. Compiler version
+**3. Compiler version**
 
-4. It doesn't compile...
+**4. It doesn't compile...**
