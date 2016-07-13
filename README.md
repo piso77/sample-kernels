@@ -105,3 +105,42 @@ snapcraft -d
 ```
 snapcraft -d --target-arch=armhf
 ```
+
+## Frequently Asked Questions
+
+1. AppArmor patches conflict
+
+**Q**: While cherry-picking the entire patchset i have got a conflict when applying the first patch:
+
+```
+UBUNTU: SAUCE: (no-up) apparmor: remove security/apparmor directory
+```
+
+Why is it so?
+
+**A**: As the commit message says, the purpose of this patch is to prepare the
+tree for the inclusion of a new AppArmor version (shipped in the following
+patch), and it achieves so by removing the local security/apparmor directory:
+
+```
+UBUNTU: SAUCE: (no-up) apparmor: remove security/apparmor directory
+
+The purpose of this commit is to prepare for the inclusion of a newer version of
+apparmor (shipped in the next git commit) - what all it does is to phisycally
+remove the security/apparmor directory (and its content) from your git tree - if
+you ever get a conflict while applying this patch, just:
+
+git rm -rf security/apparmor
+git commit -s -m "UBUNTU: SAUCE: (no-up) apparmor: remove security/apparmor directory"
+
+And skip this patch.
+```
+
+If you got a conflict, the content of your security/apparmor directory is
+probably different - just remove it, commit the changes and skip this patch.
+
+2. Snapcraft login
+
+3. Compiler version
+
+4. It doesn't compile...
