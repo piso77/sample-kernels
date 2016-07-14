@@ -175,6 +175,53 @@ Login successful.
 Your credentials will be cached, and you won't be asked to authenticate again in
 the future (until you ```snapcraft logout```).
 
-**3. Compiler version**
+**3. Build failures**
 
-**4. It doesn't compile...**
+Making a kernel compile might be a daunting task, in particular when
+dealing with heavily patched BSP-based kernels -  here's a small list of things
+you should check when your tree doesn't compile:
+
+1. Did you check if an unmodified tree / original defconfig compiles in your
+environment?
+
+Before applying any modification, always check that the original tree compiles
+in your environment
+
+2. Did you try using the supplied toolchain?
+
+Kernels are usually developed with a fixed toolchain and switching to another
+one might break it - when a clean checkout of the vendor tree doesn't compile,
+it's always a good idea to test it against the vendor supplied toolchain
+
+3. If the problem only shows up after applying our patches
+
+We base our work on a clean linux tree, and when rebasing on another tree that
+already contains patches, problems might show up.
+
+If you can't figure out where the problem is, contact us (see above).
+
+**4. Once installed on the target hardware, my kernel doesn't boot/work...**
+
+And here is small list of things to check, if your hardware doesn't work
+properly after installing your new kernel:
+
+1. Does the board work as expected when using the official image/firmware?
+
+Before fiddling with the software, it's always a good idea to test the official
+image on the target hardware and in relation to your setup (cables, power supply, network,
+etc)
+
+2. Do you get the same behaviour when installing the unmodified kernel you built in the
+previous step?
+
+Have you tried reinstalling the unmodified kernel you built in the previous
+steps on the target hardware? And does it work? If not, you might be doing something wrong:
+
+* Does it require additional files to work (firmware files? board device tree? etc)?
+* Is it in the right format (uncompress vmlinux? zImage/bzImage? uImage? etc)?
+* Is it in the correct location (boot directory? internal/external flash? etc)?
+
+3. Does your hardware have some sort of output device? Does it have a serial console or any video output?
+
+If so, check that you get some output from any of these in the previous steps,
+before testing your new kernel
