@@ -84,8 +84,8 @@ git clone https://github.com/snapcore/sample-kernels.git
 cd sample-kernels && git checkout stable-3.14.y
 ```
 * If the target hardware requires any custom patch, apply it now on top of this
-tree (in case of a big BSP stack, it makes more sense to rebase the BSP on top
-of this branch).
+tree (in case of a big BSP stack, it makes more sense to cherry-pick the patches
+here and port it over your branch).
 * If the target hardware requires any custom kernel configuration, either create a
 new kconfig fragment in ‘kernel/configs/snappy’ and adjust the ‘kdefconfig’
 section in snapcraft.yaml or apply the missing CONFIG directly in the
