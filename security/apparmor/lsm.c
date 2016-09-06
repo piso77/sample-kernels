@@ -1212,16 +1212,80 @@ static int wrap_apparmor_path_truncate(struct path *path)
 	return apparmor_path_truncate(path);
 }
 
+/* 4.1 backport for b1d9e6b0646d0e5ee5d9050bd236b6c65d66faef */
+static int wrap_apparmor_bprm_set_creds(struct linux_binprm *bprm)
+{
+	int error = cap_bprm_set_creds(bprm);
+	if (error)
+		return error;
+
+	return apparmor_bprm_set_creds(bprm);
+}
+
+static int wrap_apparmor_bprm_secureexec(struct linux_binprm *bprm)
+{
+	int ret = cap_bprm_secureexec(bprm);
+
+	if (ret)
+		return ret;
+
+	return apparmor_bprm_secureexec(bprm);
+}
+
+static int wrap_apparmor_ptrace_access_check(struct task_struct *child,
+				       unsigned int mode)
+{
+	int error = cap_ptrace_access_check(child, mode);
+	if (error)
+		return error;
+
+	return apparmor_ptrace_access_check(child, mode);
+}
+
+static int wrap_apparmor_ptrace_traceme(struct task_struct *parent)
+{
+	int error = cap_ptrace_traceme(parent);
+	if (error)
+		return error;
+
+	return apparmor_ptrace_traceme(parent);
+}
+
+static int wrap_apparmor_capget(struct task_struct *target,
+				 kernel_cap_t *effective,
+				 kernel_cap_t *inheritable,
+				 kernel_cap_t *permitted)
+{
+	const struct cred *cred = __task_cred(target);
+
+	*effective = cred->cap_effective;
+	*inheritable = cred->cap_inheritable;
+	*permitted = cred->cap_permitted;
+
+	return apparmor_capget(target, effective, inheritable, permitted);
+}
+
+static int wrap_apparmor_capable(const struct cred *cred,
+				  struct user_namespace *ns,
+				  int cap, int audit)
+{
+	int error = cap_capable(cred, ns, cap, audit);
+	if (error)
+		return error;
+
+	return apparmor_capable(cred, ns, cap, audit);
+}
+
 #ifndef LSM_HOOKS_NAME
 #define LSM_HOOKS_NAME(X) //.name =	(X),
 #endif
-static struct security_hook_list apparmor_hooks[] = {
+static struct security_operations apparmor_ops = {
 	LSM_HOOKS_NAME("apparmor")
 
-	LSM_HOOK_INIT(ptrace_access_check, apparmor_ptrace_access_check),
-	LSM_HOOK_INIT(ptrace_traceme, apparmor_ptrace_traceme),
-	LSM_HOOK_INIT(capget, apparmor_capget),
-	LSM_HOOK_INIT(capable, apparmor_capable),
+	LSM_HOOK_INIT(ptrace_access_check, wrap_apparmor_ptrace_access_check),
+	LSM_HOOK_INIT(ptrace_traceme, wrap_apparmor_ptrace_traceme),
+	LSM_HOOK_INIT(capget, wrap_apparmor_capget),
+	LSM_HOOK_INIT(capable, wrap_apparmor_capable),
 
 	LSM_HOOK_INIT(inode_free_security, apparmor_inode_free_security),
 
@@ -1284,10 +1348,10 @@ static struct security_hook_list apparmor_hooks[] = {
 	LSM_HOOK_INIT(cred_prepare, apparmor_cred_prepare),
 	LSM_HOOK_INIT(cred_transfer, apparmor_cred_transfer),
 
-	LSM_HOOK_INIT(bprm_set_creds, apparmor_bprm_set_creds),
+	LSM_HOOK_INIT(bprm_set_creds, wrap_apparmor_bprm_set_creds),
 	LSM_HOOK_INIT(bprm_committing_creds, apparmor_bprm_committing_creds),
 	LSM_HOOK_INIT(bprm_committed_creds, apparmor_bprm_committed_creds),
-	LSM_HOOK_INIT(bprm_secureexec, apparmor_bprm_secureexec),
+	LSM_HOOK_INIT(bprm_secureexec, wrap_apparmor_bprm_secureexec),
 
 	LSM_HOOK_INIT(task_setrlimit, apparmor_task_setrlimit),
 	LSM_HOOK_INIT(task_kill, apparmor_task_kill),
