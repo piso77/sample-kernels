@@ -55,4 +55,7 @@ static inline void inode_lock_nested(struct inode *inode, unsigned subclass)
 	(ret);								\
 })
 
+/* 4.1 backport for e20b043a6902ecb61c2c84355c3bae5149f391db */
+#define LSM_HOOK_INIT(N, FN)	.N = (FN)
+
 #endif /* __AA_BACKPORT_H */
