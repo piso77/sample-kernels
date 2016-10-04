@@ -17,4 +17,22 @@
 #ifndef __AA_BACKPORT_H
 #define __AA_BACKPORT_H
 
+#include <linux/fs.h>
+
+/* 4.4 backport to supprt 5955102c9984fa081b2d570cfac75c97eecf8f3b */
+static inline void inode_lock(struct inode *inode)
+{
+	mutex_lock(&inode->i_mutex);
+}
+
+static inline void inode_unlock(struct inode *inode)
+{
+	mutex_unlock(&inode->i_mutex);
+}
+
+static inline void inode_lock_nested(struct inode *inode, unsigned subclass)
+{
+	mutex_lock_nested(&inode->i_mutex, subclass);
+}
+
 #endif /* __AA_BACKPORT_H */
