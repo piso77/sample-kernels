@@ -646,7 +646,7 @@ static void revalidate_tty(struct aa_label *label)
 	if (!tty)
 		return;
 
-	spin_lock(&tty->files_lock);
+	spin_lock(&tty_files_lock);
 	if (!list_empty(&tty->tty_files)) {
 		struct tty_file_private *file_priv;
 		struct file *file;
@@ -658,7 +658,7 @@ static void revalidate_tty(struct aa_label *label)
 		if (aa_file_perm(OP_INHERIT, label, file, MAY_READ | MAY_WRITE))
 			drop_tty = 1;
 	}
-	spin_unlock(&tty->files_lock);
+	spin_unlock(&tty_files_lock);
 	tty_kref_put(tty);
 
 	if (drop_tty)
