@@ -1140,6 +1140,78 @@ static int apparmor_task_kill(struct task_struct *target, struct siginfo *info,
 	return error;
 }
 
+/* 4.6 backport wrappers to keep constification of struct path */
+static int wrap_apparmor_sb_mount(const char *dev_name, struct path *path,
+				  const char *type, unsigned long flags,
+				  void *data)
+{
+	return apparmor_sb_mount(dev_name, path, type, flags, data);
+}
+
+static int wrap_apparmor_sb_pivotroot(struct path *old_path,
+				      struct path *new_path)
+{
+	return apparmor_sb_pivotroot(old_path, new_path);
+}
+
+static int wrap_apparmor_path_link(struct dentry *old_dentry,
+				   struct path *new_dir,
+				   struct dentry *new_dentry)
+{
+	return apparmor_path_link(old_dentry, new_dir, new_dentry);
+}
+
+static int wrap_apparmor_path_unlink(struct path *dir, struct dentry *dentry)
+{
+	return apparmor_path_unlink(dir, dentry);
+}
+
+static int wrap_apparmor_path_symlink(struct path *dir, struct dentry *dentry,
+				      const char *old_name)
+{
+	return apparmor_path_symlink(dir, dentry, old_name);
+}
+
+static int wrap_apparmor_path_mkdir(struct path *dir, struct dentry *dentry,
+				    umode_t mode)
+{
+	return apparmor_path_mkdir(dir, dentry, mode);
+}
+
+static int wrap_apparmor_path_rmdir(struct path *dir, struct dentry *dentry)
+{
+	return apparmor_path_rmdir(dir, dentry);
+}
+
+static int wrap_apparmor_path_mknod(struct path *dir, struct dentry *dentry,
+				    umode_t mode, unsigned int dev)
+{
+	return apparmor_path_mknod(dir, dentry, mode, dev);
+}
+
+static int wrap_apparmor_path_rename(struct path *old_dir,
+				     struct dentry *old_dentry,
+				     struct path *new_dir,
+				     struct dentry *new_dentry)
+{
+	return apparmor_path_rename(old_dir, old_dentry, new_dir, new_dentry);
+}
+
+static int wrap_apparmor_path_chmod(struct path *path, umode_t mode)
+{
+	return apparmor_path_chmod(path, mode);
+}
+
+static int wrap_apparmor_path_chown(struct path *path, kuid_t uid, kgid_t gid)
+{
+	return apparmor_path_chown(path, uid, gid);
+}
+
+static int wrap_apparmor_path_truncate(struct path *path)
+{
+	return apparmor_path_truncate(path);
+}
+
 #ifndef LSM_HOOKS_NAME
 #define LSM_HOOKS_NAME(X) //.name =	(X),
 #endif
@@ -1153,20 +1225,20 @@ static struct security_hook_list apparmor_hooks[] = {
 
 	LSM_HOOK_INIT(inode_free_security, apparmor_inode_free_security),
 
-	LSM_HOOK_INIT(sb_mount, apparmor_sb_mount),
+	LSM_HOOK_INIT(sb_mount, wrap_apparmor_sb_mount),
 	LSM_HOOK_INIT(sb_umount, apparmor_sb_umount),
-	LSM_HOOK_INIT(sb_pivotroot, apparmor_sb_pivotroot),
+	LSM_HOOK_INIT(sb_pivotroot, wrap_apparmor_sb_pivotroot),
 
-	LSM_HOOK_INIT(path_link, apparmor_path_link),
-	LSM_HOOK_INIT(path_unlink, apparmor_path_unlink),
-	LSM_HOOK_INIT(path_symlink, apparmor_path_symlink),
-	LSM_HOOK_INIT(path_mkdir, apparmor_path_mkdir),
-	LSM_HOOK_INIT(path_rmdir, apparmor_path_rmdir),
-	LSM_HOOK_INIT(path_mknod, apparmor_path_mknod),
-	LSM_HOOK_INIT(path_rename, apparmor_path_rename),
-	LSM_HOOK_INIT(path_chmod, apparmor_path_chmod),
-	LSM_HOOK_INIT(path_chown, apparmor_path_chown),
-	LSM_HOOK_INIT(path_truncate, apparmor_path_truncate),
+	LSM_HOOK_INIT(path_link, wrap_apparmor_path_link),
+	LSM_HOOK_INIT(path_unlink, wrap_apparmor_path_unlink),
+	LSM_HOOK_INIT(path_symlink, wrap_apparmor_path_symlink),
+	LSM_HOOK_INIT(path_mkdir, wrap_apparmor_path_mkdir),
+	LSM_HOOK_INIT(path_rmdir, wrap_apparmor_path_rmdir),
+	LSM_HOOK_INIT(path_mknod, wrap_apparmor_path_mknod),
+	LSM_HOOK_INIT(path_rename, wrap_apparmor_path_rename),
+	LSM_HOOK_INIT(path_chmod, wrap_apparmor_path_chmod),
+	LSM_HOOK_INIT(path_chown, wrap_apparmor_path_chown),
+	LSM_HOOK_INIT(path_truncate, wrap_apparmor_path_truncate),
 	LSM_HOOK_INIT(inode_getattr, apparmor_inode_getattr),
 
 	LSM_HOOK_INIT(file_open, apparmor_file_open),
